@@ -7,7 +7,7 @@
 		mc:Ignorable="d"
 		Title="MainWindow"
 		Height="550"
-		Width="1200">
+		Width="1000">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="250" />
@@ -18,33 +18,35 @@
 		<GroupBox Header="Ny Booking"
 				  FontSize="16">
 			<Grid>
-				<TextBox HorizontalAlignment="Left"
-						 Margin="80,10,0,0"
-						 Text=""
-						 FontSize="16"
-						 TextWrapping="Wrap"
-						 VerticalAlignment="Top"
-						 Width="120" />
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="20,10,0,0"
 						   Text="Navn:"
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
+				<TextBox Name="NameInput"
+						 HorizontalAlignment="Left"
+						 Margin="80,10,0,0"
+						 Text=""
+						 FontSize="16"
+						 TextWrapping="Wrap"
+						 VerticalAlignment="Top"
+						 Width="120" />
 
-				<TextBox HorizontalAlignment="Left"
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="20,50,0,0"
+						   Text="Mail:"
+						   FontSize="16"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<TextBox Name="MailInput"
+						 HorizontalAlignment="Left"
 						 Margin="80,50,0,0"
 						 Text=""
 						 FontSize="16"
 						 TextWrapping="Wrap"
 						 VerticalAlignment="Top"
 						 Width="120" />
-				<TextBlock HorizontalAlignment="Left"
-						   Margin="20,50,0,0"
-						   Text="Navn:"
-						   FontSize="16"
-						   TextWrapping="Wrap"
-						   VerticalAlignment="Top" />
 
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="20,92,0,0"
@@ -52,27 +54,151 @@
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
-				<DatePicker HorizontalAlignment="Left"
+				<DatePicker Name="StartDate"
+							HorizontalAlignment="Left"
 							Margin="80,90,0,0"
 							FontSize="16"
-							VerticalAlignment="Top" />
-				
+							VerticalAlignment="Top"
+							Width="120" />
+
 				<TextBlock HorizontalAlignment="Left"
-						   Margin="20,132,0,0"
-						   Text="Fra:"
+						   Margin="20,130,0,0"
+						   Text="Til:"
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
-				<DatePicker HorizontalAlignment="Left"
+				<DatePicker Name="EndDate"
+							HorizontalAlignment="Left"
 							Margin="80,130,0,0"
 							FontSize="16"
-							VerticalAlignment="Top" />
+							VerticalAlignment="Top"
+							Width="120" />
+
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="20,180,0,0"
+						   Text="Plads:"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<ListBox Margin="80,180,38,171" />
+				<Button Name="ChosenSpot"
+						Content="Tjek"
+						HorizontalAlignment="Left"
+						Margin="150,340,0,0"
+						VerticalAlignment="Top"
+						Width="50" />
+
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="20,380,0,0"
+						   Text="Antal Voksne:"
+						   FontSize="16"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<TextBox Name="AdultsQuantity"
+						 HorizontalAlignment="Left"
+						 Margin="130,380,0,0"
+						 Text=""
+						 FontSize="16"
+						 TextWrapping="Wrap"
+						 VerticalAlignment="Top"
+						 Width="50" />
+
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="20,410,0,0"
+						   Text="Antal Børn:"
+						   FontSize="16"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<TextBox Name="KidsQuantity"
+						 HorizontalAlignment="Left"
+						 Margin="130,410,0,0"
+						 Text=""
+						 FontSize="16"
+						 TextWrapping="Wrap"
+						 VerticalAlignment="Top"
+						 Width="50" />
+				<Button Name="AddBooking"
+						Content="Opret"
+						HorizontalAlignment="Left"
+						Margin="130,445,0,0"
+						FontSize="20"
+						Width="70"
+						VerticalAlignment="Top" />
 			</Grid>
 		</GroupBox>
 
 
+
+
 		<GroupBox Grid.Column="1"
 				  Header="Søg og vediger"
-				  FontSize="16" />
+				  FontSize="16">
+			<Grid>
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="20,10,0,0"
+						   Text="Fra:"
+						   FontSize="16"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<DatePicker Name="StartDateUpdate"
+							HorizontalAlignment="Left"
+							Margin="80,8,0,0"
+							FontSize="16"
+							VerticalAlignment="Top"
+							Width="120" />
+
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="20,48,0,0"
+						   Text="Til:"
+						   FontSize="16"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<DatePicker Name="EndDateUpdate"
+							HorizontalAlignment="Left"
+							Margin="80,48,0,0"
+							FontSize="16"
+							VerticalAlignment="Top"
+							Width="120" />
+
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="20,100,0,0"
+						   Text="Ledige pladser:"
+						   FontSize="16"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<ListBox Name="AvailableSpots"
+						 Margin="20,130,598,136" />
+
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="230,10,0,0"
+						   Text="Bookninger på pladsen"
+						   FontSize="16"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<DataGrid Name="DG"
+						  Margin="230,40,57,69"
+						  AutoGenerateColumns="False">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Pitch"
+											Binding="{Binding Path=Number}" />
+						<DataGridTextColumn Header="StartDato"
+											Binding="{Binding Path=StartDate, StringFormat=dd.MM.yyyy}" />
+						<DataGridTextColumn Header="SlutDato"
+											Binding="{Binding Path=EndDate, StringFormat=dd.MM.yyyy}" />
+						<DataGridTextColumn Header="Navn"
+											Binding="{Binding Path=Name}" />
+						<DataGridTextColumn Header="Mail"
+											Binding="{Binding Path=Mail}" />
+					</DataGrid.Columns>
+				</DataGrid>
+
+				<Button Name="Update"
+						Content="Rediger"
+						HorizontalAlignment="Left"
+						Margin="230,440,0,0"
+						FontSize="20"
+						Width="80"
+						VerticalAlignment="Top" />
+			</Grid>
+		</GroupBox>
 	</Grid>
 </Window>

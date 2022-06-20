@@ -38,7 +38,12 @@ namespace GUI
 				MessageBox.Show($"Fejl under tilgang til data: {e.Message}", "Opstartsfejl", MessageBoxButton.OK, MessageBoxImage.Error);
 				Close();
 			}
-
+			List<Bookings> bookings = repo.GetAllBookings();
+			List<Booker> bookers = repo.GetAllBookers();
+			List<Pitches> pitches = repo.GetAllPitches();
+			DG.ItemsSource = bookings;
+			DG.ItemsSource = bookers;
+			DG.ItemsSource = pitches;
 		}
 	}
 }

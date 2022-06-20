@@ -9,8 +9,8 @@ namespace Entities
 	public class Bookings
 	{
 		public int ID { get; set; }
-		public DateTime Start { get; set; }
-		public DateTime End { get; set; }
+		public DateTime StartDate { get; set; }
+		public DateTime EndDate { get; set; }
 		public int PitchID { get; set; }
 		public int BookerID { get; set; }
 	}

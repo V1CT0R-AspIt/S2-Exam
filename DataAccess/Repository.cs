@@ -166,8 +166,8 @@ namespace DataAccess
 				Bookings b = new()
 				{
 					ID = id,
-					Start = start,
-					End = end,
+					StartDate = start,
+					EndDate = end,
 					PitchID = pitch_FK,
 					BookerID = booker_FK
 				};
@@ -179,10 +179,5 @@ namespace DataAccess
 			// Return the list of bookings:
 			return bookings;
 		}
-	}
-	public class DataItem
-	{
-		public double Values { get; set; }
-		public double MaxValue { get; set; }
 	}
 }
