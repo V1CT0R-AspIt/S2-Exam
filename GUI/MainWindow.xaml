@@ -7,7 +7,7 @@
 		mc:Ignorable="d"
 		Title="MainWindow"
 		Height="550"
-		Width="1000">
+		Width="1200">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="250" />
@@ -122,7 +122,8 @@
 						Margin="130,445,0,0"
 						FontSize="20"
 						Width="70"
-						VerticalAlignment="Top" />
+						VerticalAlignment="Top"
+						Click="AddBooking_Click" />
 			</Grid>
 		</GroupBox>
 
@@ -133,6 +134,20 @@
 				  Header="Søg og vediger"
 				  FontSize="16">
 			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="225" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<TextBlock Name="temp"
+						   Margin="20,400,0,0"
+						   Text=""
+						   FontSize="16"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top"
+						   HorizontalAlignment="Left" />
+
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="20,10,0,0"
 						   Text="Fra:"
@@ -158,6 +173,10 @@
 							FontSize="16"
 							VerticalAlignment="Top"
 							Width="120" />
+				<Button Content="Søg"
+						HorizontalAlignment="Left"
+						Margin="160,85,0,0"
+						VerticalAlignment="Top" />
 
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="20,100,0,0"
@@ -165,25 +184,53 @@
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
-				<ListBox Name="AvailableSpots"
-						 Margin="20,130,598,136" />
+				<ListBox Grid.Column="0"
+						 Name="AvailableSpots"
+						 Margin="20,130,85,136" />
 
 				<TextBlock HorizontalAlignment="Left"
-						   Margin="230,10,0,0"
+						   Margin="10,10,0,0"
 						   Text="Bookninger på pladsen"
 						   FontSize="16"
 						   TextWrapping="Wrap"
-						   VerticalAlignment="Top" />
-				<DataGrid Name="DG"
-						  Margin="230,40,57,69"
+						   VerticalAlignment="Top"
+						   Grid.Column="1" />
+
+				<DataGrid Name="PitchGrid"
+						  Grid.Column="1"
+						  Padding="0,10,0,10"
+						  Height="400"
+						  Grid.ColumnSpan="2"
+						  Margin="0,40,237,66"
 						  AutoGenerateColumns="False">
 					<DataGrid.Columns>
 						<DataGridTextColumn Header="Pitch"
 											Binding="{Binding Path=Number}" />
-						<DataGridTextColumn Header="StartDato"
+					</DataGrid.Columns>
+				</DataGrid>
+
+				<DataGrid Name="BookingGrid"
+						  Grid.Column="1"
+						  Padding="0,10,0,10"
+						  Height="400"
+						  Grid.ColumnSpan="2"
+						  Margin="237,40,0,66"
+						  AutoGenerateColumns="False">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="StarDato"
 											Binding="{Binding Path=StartDate, StringFormat=dd.MM.yyyy}" />
 						<DataGridTextColumn Header="SlutDato"
 											Binding="{Binding Path=EndDate, StringFormat=dd.MM.yyyy}" />
+					</DataGrid.Columns>
+				</DataGrid>
+
+				<DataGrid Name="BookerGrid"
+						  Grid.Column="2"
+						  Padding="0,10,0,10"
+						  Grid.ColumnSpan="2"
+						  Margin="237,40,-1,66"
+						  AutoGenerateColumns="False">
+					<DataGrid.Columns>
 						<DataGridTextColumn Header="Navn"
 											Binding="{Binding Path=Name}" />
 						<DataGridTextColumn Header="Mail"
@@ -191,10 +238,11 @@
 					</DataGrid.Columns>
 				</DataGrid>
 
-				<Button Name="Update"
+				<Button Grid.Column="1"
+						Name="Update"
 						Content="Rediger"
 						HorizontalAlignment="Left"
-						Margin="230,440,0,0"
+						Margin="20,450,0,0"
 						FontSize="20"
 						Width="80"
 						VerticalAlignment="Top" />

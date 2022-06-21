@@ -179,5 +179,25 @@ namespace DataAccess
 			// Return the list of bookings:
 			return bookings;
 		}
+
+		public List<int> pitchList()
+		{
+			List<int> list = new();
+			for(int i = 1; i < 100; i++)
+			{
+				list.Add(i);
+			}
+			List<int> pitchlist = pitchList();
+			List<Pitches> pitches = GetAllPitches();
+
+			for (int i = 0; i < pitchlist.Count; i++)
+			{
+				if (pitches[i].Number == pitchlist[i])
+				{
+					pitchlist[i].
+				}
+			}
+			return list;
+		}
 	}
 }

@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DataAccess;
 using Entities;
+using Services;
 
 namespace GUI
 {
@@ -24,9 +25,17 @@ namespace GUI
 	{
 		private Repository repo;
 
+		private List<int> numberAvailable = new()
+		{
+
+		};
+
 		public MainWindow()
 		{
 			InitializeComponent();
+			WeatherService weatherService = new();
+			string weather = weatherService.GetWeather();
+			temp.Text = weather;
 			try
 			{
 				//Initialize repo field:
@@ -41,9 +50,18 @@ namespace GUI
 			List<Bookings> bookings = repo.GetAllBookings();
 			List<Booker> bookers = repo.GetAllBookers();
 			List<Pitches> pitches = repo.GetAllPitches();
-			DG.ItemsSource = bookings;
-			DG.ItemsSource = bookers;
-			DG.ItemsSource = pitches;
+			BookingGrid.ItemsSource = bookings;
+			BookerGrid.ItemsSource = bookers;
+			PitchGrid.ItemsSource = pitches;
+		}
+
+		private void AddBooking_Click(object sender, RoutedEventArgs e)
+		{
+			// Mock input data:
+
+			// Make object to send to repository:
+
+			// Call the repository:
 		}
 	}
 }
