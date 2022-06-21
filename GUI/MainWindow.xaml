@@ -79,23 +79,18 @@
 						   Text="Plads:"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
-				<ListBox Margin="80,180,38,171" />
-				<Button Name="ChosenSpot"
-						Content="Tjek"
-						HorizontalAlignment="Left"
-						Margin="150,340,0,0"
-						VerticalAlignment="Top"
-						Width="50" />
+				<ListBox Margin="80,180,38,171"
+						 Name="SpotInput" />
 
 				<TextBlock HorizontalAlignment="Left"
-						   Margin="20,380,0,0"
+						   Margin="20,360,0,0"
 						   Text="Antal Voksne:"
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
 				<TextBox Name="AdultsQuantity"
 						 HorizontalAlignment="Left"
-						 Margin="130,380,0,0"
+						 Margin="130,360,0,0"
 						 Text=""
 						 FontSize="16"
 						 TextWrapping="Wrap"
@@ -103,14 +98,14 @@
 						 Width="50" />
 
 				<TextBlock HorizontalAlignment="Left"
-						   Margin="20,410,0,0"
+						   Margin="20,390,0,0"
 						   Text="Antal Børn:"
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
 				<TextBox Name="KidsQuantity"
 						 HorizontalAlignment="Left"
-						 Margin="130,410,0,0"
+						 Margin="130,390,0,0"
 						 Text=""
 						 FontSize="16"
 						 TextWrapping="Wrap"
@@ -119,7 +114,7 @@
 				<Button Name="AddBooking"
 						Content="Opret"
 						HorizontalAlignment="Left"
-						Margin="130,445,0,0"
+						Margin="130,425,0,0"
 						FontSize="20"
 						Width="70"
 						VerticalAlignment="Top"

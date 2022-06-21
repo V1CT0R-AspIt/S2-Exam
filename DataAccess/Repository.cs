@@ -180,24 +180,88 @@ namespace DataAccess
 			return bookings;
 		}
 
+		public void AddNewPitch(Pitches pitchToAdd)
+		{
+			//Make the list that the method returns:
+			List<Pitches> pitches = new();
+
+			//Make a connection to the DB and open it:
+			SqlConnection connection = new(connectionString);
+			connection.Open();
+
+			//Make the SQL query:
+			string sql = $"INSERT INTO Pitches (ID, Number) VALUES('{pitchToAdd.ID}', '{pitchToAdd.Number}')";
+
+			//Make the command object:
+			SqlCommand command = new(sql, connection);
+
+			//Execute the command:
+			command.ExecuteNonQuery();
+
+			//Close the connection:
+			connection.Close();
+		}
+		public void AddNewBooker(Booker bookerToAdd)
+		{
+			//Make the list that the method returns:
+			List<Booker> bookers = new();
+
+			//Make a connection to the DB and open it:
+			SqlConnection connection = new(connectionString);
+			connection.Open();
+
+			//Make the SQL query:
+			string sql = $"INSERT INTO ContactInformations (ID, Name, Mail) VALUES('{bookerToAdd.ID}', '{bookerToAdd.Name}', '{bookerToAdd.Mail}')";
+
+			//Make the command object:
+			SqlCommand command = new(sql, connection);
+
+			//Execute the command:
+			command.ExecuteNonQuery();
+
+			//Close the connection:
+			connection.Close();
+		}
+		public void AddNewBooking(Bookings bookingToAdd)
+		{
+			//Make the list that the method returns:
+			List<Bookings> bookings = new();
+
+			//Make a connection to the DB and open it:
+			SqlConnection connection = new(connectionString);
+			connection.Open();
+
+			//Make the SQL query:
+			string sql = $"INSERT INTO ContactInformations (ID, StartDate, EndDate, PitchID, BookerID) VALUES('{bookingToAdd.ID}', '{bookingToAdd.StartDate}', '{bookingToAdd.EndDate}', '{bookingToAdd.PitchID}', '{bookingToAdd.BookerID}')";
+
+			//Make the command object:
+			SqlCommand command = new(sql, connection);
+
+			//Execute the command:
+			command.ExecuteNonQuery();
+
+			//Close the connection:
+			connection.Close();
+		}
+
 		public List<int> pitchList()
 		{
-			List<int> list = new();
-			for(int i = 1; i < 100; i++)
+			List<int> pitchlist = new();
+			for(int i = 1; i <= 22; i++)
 			{
-				list.Add(i);
+				pitchlist.Add(i);
 			}
-			List<int> pitchlist = pitchList();
+
 			List<Pitches> pitches = GetAllPitches();
 
 			for (int i = 0; i < pitchlist.Count; i++)
 			{
-				if (pitches[i].Number == pitchlist[i])
+				if (pitchlist[i] == pitches[i].Number)
 				{
-					pitchlist[i].
+					pitchlist.Remove(i);
 				}
 			}
-			return list;
+			return pitchlist;
 		}
 	}
 }
