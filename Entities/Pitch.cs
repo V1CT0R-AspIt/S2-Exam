@@ -2,7 +2,7 @@
 
 namespace Entities
 {
-	public class Pitches
+	public class Pitch
 	{
 		public int ID { get; set; }
 		public int Number { get; set; }

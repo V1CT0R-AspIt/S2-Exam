@@ -17,251 +17,256 @@ namespace DataAccess
 			connection.Close();
 		}
 
-		public List<Booker> GetAllBookers()
+		public List<Booking> GetAllBookings()
 		{
-			// Make the list that the method returns:
-			List<Booker> bookers = new();
+			// Vi bruger den samme forbindelse til begge SELECT transaktions, så derfor har vi kun én sql streng:
+			string sql = "SELECT * FROM Pitches; SELECT * FROM Bookers; SELECT * FROM Bookings;";
 
-			// Make a connection to the DB and open it:
+			// Lav en forbindelse til databasen, åbn den:
 			SqlConnection connection = new(connectionString);
 			connection.Open();
 
-			// Make the SQl query:
-			string sql = "SELECT * FROM Bookers";
-
-			// Make the command object:
+			// Lav et command object, der skal udføre transaktionen
 			SqlCommand command = new(sql, connection);
 
-			// Execute query and save the returned data in a variable:
+			// Udfør transaktionen, og gem resultatet i en SqlDataReader:
 			SqlDataReader reader = command.ExecuteReader();
 
-			// Convert reader data to C# objects. For each row in the reader:
-			while (reader.Read())
-			{
-				int id = (int)reader[0];
-				string name = (string)reader[1];
-				string mail = (string)reader[2];
+			// Udtag Bookings data og lav om til C# objekter:
+			List<Pitch> pitches = MakePitchesList(reader);
 
-				// Assign all the retrieved values to the booker object:
-				Booker b = new()
-				{
-					ID = id,
-					Name = name,
-					Mail = mail
-				};
+			reader.NextResult();
 
-				// Add the retrieved booker to the list of bookers:
-				bookers.Add(b);
-			}
+			List<Booker> bookers = MakeBookersList(reader);
 
-			// Return the list of bookers:
-			return bookers;
+			reader.NextResult();
+
+			List<Booking> bookings = MakeBookingsList(reader, pitches, bookers);
+
+			// returner listen der nu er fyldt med objekter:
+			return bookings;
 		}
 
-		public List<Pitches> GetAllPitches()
+		public List<Pitch> GetAllPitches()
 		{
-			// Make the list that the method returns:
-			List<Pitches> pitches = new();
+			List<Pitch> pitches = new();
 
-			// Make a connection to the DB and open it:
+			string sql = "SELECT * FROM Pitches;";
+
 			SqlConnection connection = new(connectionString);
 			connection.Open();
 
-			// Make the SQl query:
-			string sql = "SELECT * FROM Pitches";
-
-			// Make the command object:
 			SqlCommand command = new(sql, connection);
 
-			// Execute query and save the returned data in a variable:
 			SqlDataReader reader = command.ExecuteReader();
 
-			// Convert reader data to C# objects. For each row in the reader:
 			while (reader.Read())
 			{
-				int id = (int)reader[0];
-				int number = (int)reader[1];
-
-				// Assign all the retrieved values to the booker object:
-				Pitches p = new()
+				int id = (int)reader["ID"];
+				int number = (int)reader["Number"];
+				Pitch pitch = new()
 				{
 					ID = id,
 					Number = number
 				};
-
-				// Add the retrieved booker to the list of pitches:
-				pitches.Add(p);
+				pitches.Add(pitch);
 			}
 
-			// Return the list of pitches:
 			return pitches;
 		}
 
-		public List<Bookings> GetAllBookings()
+		public List<Booker> GetAllBookers()
 		{
-			// First, get all the contact infos, because they are aggregated from bookers and pitches:
-			List<Booker> bookers = GetAllBookers();
-			List<Pitches> pitches = GetAllPitches();
+			List<Booker> bookers = new();
 
-			// Make the list that the method returns:
-			List<Bookings> bookings = new();
+			string sql = "SELECT * FROM Bookers;";
 
-			// Make a connection to the DB and open it:
 			SqlConnection connection = new(connectionString);
 			connection.Open();
 
-			// Make the SQl query:
-			string sql = "SELECT * FROM Bookings";
-
-			// Make the command object:
 			SqlCommand command = new(sql, connection);
 
-			// Execute query and save the returned data in a variable:
 			SqlDataReader reader = command.ExecuteReader();
 
-			// Convert reader data to C# objects. For each row in the reader:
 			while (reader.Read())
 			{
-				int id = (int)reader[0];
-				DateTime start = (DateTime)reader[1];
-				DateTime end = (DateTime)reader[2];
-
-				// This is the pitches foreign key:
-				int pitch_FK = (int)reader[3];
-				// This is the bookers foreign key:
-				int booker_FK = (int)reader[4];
-
-				// The aggregated pitches and bookers object. Initialize to null:
-				Pitches pitch = null;
-				Booker booker = null;
-
-				// Loop through all the pitches objects in the pitches list, that we got before from the database:
-				for (int i = 0; i < pitches.Count; i++)
-				{
-					// If there is a match in the retrieved bookings row's FK value,
-					if (pitch_FK == pitches[i].ID)
-					{
-						// then assign the object from the list, to the property on the bookings object, thereby making the OOP aggregation:
-						pitch = pitches[i];
-
-						// Break out of the loop, because there' no reason to continue:
-						break;
-					}
-				}
-				// Loop through all the booker objects in the booker list, that we got before from the database:
-				for (int i = 0; i < bookers.Count; i++)
-				{
-					// If there is a match in the retrieved bookings row's FK value,
-					if (booker_FK == bookers[i].ID)
-					{
-						// then assign the object from the list, to the property on the bookings object, thereby making the OOP aggregation:
-						booker = bookers[i];
-
-						// Break out of the loop, because there' no reason to continue:
-						break;
-					}
-				}
-
-				// Assign all the retrieved values to the bookings object:
-				Bookings b = new()
+				int id = (int)reader["ID"];
+				string name = (string)reader["Name"];
+				string email = (string)reader["Email"];
+				int children = (int)reader["Children"];
+				int adults = (int)reader["Adults"];
+				Booker booker = new()
 				{
 					ID = id,
-					StartDate = start,
-					EndDate = end,
-					PitchID = pitch_FK,
-					BookerID = booker_FK
+					Name = name,
+					Email = email,
+					Children = children,
+					Adults = adults
 				};
-
-				// Add the retrieved person to the list of bookings:
-				bookings.Add(b);
+				bookers.Add(booker);
 			}
 
-			// Return the list of bookings:
+			return bookers;
+		}
+
+		private List<Booking> MakeBookingsList(SqlDataReader reader, List<Pitch> pitches, List<Booker> bookers)
+		{
+			List<Booking> bookings = new();
+
+			while (reader.Read())
+			{
+				int id = (int)reader["ID"];
+				DateTime startDate = (DateTime)reader["StartDate"];
+				DateTime endDate = (DateTime)reader["EndDate"];
+				int pitch_FK = (int)reader["PitchID"];
+				int booker_FK = (int)reader["BookerID"];
+
+				Pitch pitch = GetPitchForBooking(pitch_FK, pitches);
+
+				Booker booker = GetBookerForBooking(booker_FK, bookers);
+
+				Booking booking = new()
+				{
+					ID = id,
+					StartDate = startDate,
+					EndDate = endDate,
+					Pitch = pitch,
+					Booker = booker
+				};
+				bookings.Add(booking);
+			}
+
 			return bookings;
 		}
 
-		public void AddNewPitch(Pitches pitchToAdd)
+		private List<Pitch> MakePitchesList(SqlDataReader reader)
 		{
-			//Make the list that the method returns:
-			List<Pitches> pitches = new();
+			List<Pitch> pitches = new();
 
-			//Make a connection to the DB and open it:
-			SqlConnection connection = new(connectionString);
-			connection.Open();
+			while (reader.Read())
+			{
+				int id = (int)reader["ID"];
+				int number = (int)reader["Number"];
+				Pitch pitch = new()
+				{
+					ID = id,
+					Number = number
+				};
+				pitches.Add(pitch);
+			}
 
-			//Make the SQL query:
-			string sql = $"INSERT INTO Pitches (ID, Number) VALUES('{pitchToAdd.ID}', '{pitchToAdd.Number}')";
-
-			//Make the command object:
-			SqlCommand command = new(sql, connection);
-
-			//Execute the command:
-			command.ExecuteNonQuery();
-
-			//Close the connection:
-			connection.Close();
+			return pitches;
 		}
-		public void AddNewBooker(Booker bookerToAdd)
+
+		private List<Booker> MakeBookersList(SqlDataReader reader)
 		{
-			//Make the list that the method returns:
 			List<Booker> bookers = new();
 
-			//Make a connection to the DB and open it:
-			SqlConnection connection = new(connectionString);
-			connection.Open();
-
-			//Make the SQL query:
-			string sql = $"INSERT INTO ContactInformations (ID, Name, Mail) VALUES('{bookerToAdd.ID}', '{bookerToAdd.Name}', '{bookerToAdd.Mail}')";
-
-			//Make the command object:
-			SqlCommand command = new(sql, connection);
-
-			//Execute the command:
-			command.ExecuteNonQuery();
-
-			//Close the connection:
-			connection.Close();
-		}
-		public void AddNewBooking(Bookings bookingToAdd)
-		{
-			//Make the list that the method returns:
-			List<Bookings> bookings = new();
-
-			//Make a connection to the DB and open it:
-			SqlConnection connection = new(connectionString);
-			connection.Open();
-
-			//Make the SQL query:
-			string sql = $"INSERT INTO ContactInformations (ID, StartDate, EndDate, PitchID, BookerID) VALUES('{bookingToAdd.ID}', '{bookingToAdd.StartDate}', '{bookingToAdd.EndDate}', '{bookingToAdd.PitchID}', '{bookingToAdd.BookerID}')";
-
-			//Make the command object:
-			SqlCommand command = new(sql, connection);
-
-			//Execute the command:
-			command.ExecuteNonQuery();
-
-			//Close the connection:
-			connection.Close();
-		}
-
-		public List<int> pitchList()
-		{
-			List<int> pitchlist = new();
-			for(int i = 1; i <= 22; i++)
+			while (reader.Read())
 			{
-				pitchlist.Add(i);
+				int id = (int)reader["ID"];
+				string name = (string)reader["Name"];
+				string email = (string)reader["Email"];
+				int children = (int)reader["Children"];
+				int adults = (int)reader["Adults"];
+				Booker booker = new()
+				{
+					ID = id,
+					Name = name,
+					Email = email,
+					Children = children,
+					Adults = adults
+				};
+				bookers.Add(booker);
 			}
 
-			List<Pitches> pitches = GetAllPitches();
+			return bookers;
+		}
 
-			for (int i = 0; i < pitchlist.Count; i++)
+		private Pitch GetPitchForBooking(int pitch_FK, List<Pitch> pitches)
+		{
+			foreach (Pitch pitch in pitches)
 			{
-				if (pitchlist[i] == pitches[i].Number)
+				if (pitch.ID == pitch_FK)
 				{
-					pitchlist.Remove(i);
+					return pitch;
 				}
 			}
-			return pitchlist;
+			return new();
+		}
+
+		private Booker GetBookerForBooking(int Booker_FK, List<Booker> bookers)
+		{
+			foreach (Booker booker in bookers)
+			{
+				if (booker.ID == Booker_FK)
+				{
+					return booker;
+				}
+			}
+			return new();
+		}
+
+
+		private int GetBooker()
+		{
+			string sql = "SELECT TOP 1 * FROM Bookers ORDER BY ID DESC";
+
+			SqlConnection connection = new(connectionString);
+			connection.Open();
+
+			SqlCommand command = new(sql, connection);
+
+			SqlDataReader reader = command.ExecuteReader();
+
+			int id = 0;
+			while (reader.Read())
+			{
+				id = (int)reader["ID"];
+			}
+
+			return id;
+		}
+
+		private string MakeSqlDateTimeHappy(DateTime Date)
+		{
+			return Date.ToString("yyyy.MM.dd");
+		}
+
+		public void AddNewBooking(Booker booker, Booking booking)
+		{
+			string sql1 = $"INSERT INTO Bookers (Name, Email, Children, Adults) VALUES ('{booker.Name}', '{booker.Email}', {booker.Children}, {booker.Adults});";
+
+			SqlConnection connection = new(connectionString);
+			connection.Open();
+
+			SqlCommand command1 = new(sql1, connection);
+
+			command1.ExecuteNonQuery();
+
+			string sql2 = $"INSERT INTO Bookings (StartDate, EndDate, PitchID, BookerID) VALUES ('{MakeSqlDateTimeHappy(booking.StartDate)}', '{MakeSqlDateTimeHappy(booking.EndDate)}', {booking.PitchID}, {GetBooker()});";
+
+			SqlCommand command2 = new(sql2, connection);
+
+			command2.ExecuteNonQuery();
+		}
+
+		public void UpdateBooking(Booker booker, Booking booking)
+		{
+			string sql1 = $"UPDATE Bookers SET Name = '{booker.Name}', Email = '{booker.Email}', Children = {booker.Children}, Adults = {booker.Adults} WHERE ID = {booker.ID};";
+
+			SqlConnection connection = new(connectionString);
+			connection.Open();
+
+			SqlCommand command1 = new(sql1, connection);
+
+			command1.ExecuteNonQuery();
+
+			string sql2 = $"UPDATE Bookings SET StartDate = '{MakeSqlDateTimeHappy(booking.StartDate)}', EndDate = '{MakeSqlDateTimeHappy(booking.EndDate)}', PitchID = {booking.PitchID} WHERE ID = {booking.ID};";
+
+			SqlCommand command2 = new(sql2, connection);
+
+			command2.ExecuteNonQuery();
 		}
 	}
 }

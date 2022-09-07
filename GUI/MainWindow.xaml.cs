@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using DataAccess;
 using Entities;
 using Services;
+using System.Net.Mail;
+using System.Reflection;
 
 namespace GUI
 {
@@ -23,6 +25,7 @@ namespace GUI
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		//Used to access methods in the Repository
 		private readonly Repository repo;
 
 		public MainWindow()
@@ -39,87 +42,259 @@ namespace GUI
 				MessageBox.Show($"Fejl under tilgang til data: {e.Message}", "Opstartsfejl", MessageBoxButton.OK, MessageBoxImage.Error);
 				Close();
 			}
+
 			WeatherService weatherService = new();
 			string weather = weatherService.GetWeather();
 			temp.Text = weather;
-			List<int> pitchlist = repo.pitchList();
-			SpotInput.ItemsSource = pitchlist;
+
+
+			List<Pitch> pitches = repo.GetAllPitches();
+			PitchInput.ItemsSource = pitches;
+			CheckAndSearchPitchInput.ItemsSource = pitches;
 
 			RefreshGridList();
 		}
+
+
 		private void RefreshGridList()
 		{
-			List<Bookings> bookings = repo.GetAllBookings();
-			List<Booker> bookers = repo.GetAllBookers();
-			List<Pitches> pitches = repo.GetAllPitches();
+			List<Booking> bookings = repo.GetAllBookings();
 			BookingGrid.ItemsSource = null;
-			BookerGrid.ItemsSource = null;
-			PitchGrid.ItemsSource = null;
 			BookingGrid.ItemsSource = bookings;
-			BookerGrid.ItemsSource = bookers;
-			PitchGrid.ItemsSource = pitches;
+		}
+
+
+		private bool AreDatesConsistent(DateTime startDate, DateTime endDate)
+		{
+			return startDate < endDate;
+		}
+
+		private bool IsPitchAvailable(DateTime startDate, DateTime endDate, Pitch pitch)
+		{
+			List<Booking> bookings = repo.GetAllBookings();
+
+			for(int i = 0; i < bookings.Count; i++)
+			{
+				if ((startDate <= bookings[i].EndDate && startDate >= bookings[i].StartDate) || (endDate <= bookings[i].EndDate && endDate >= bookings[i].StartDate))
+				{
+					if (pitch.Number == bookings[i].Pitch.Number)
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		private bool IsEmailValid(string email)
+		{
+			var valid = true;
+
+			try
+			{
+				var emailAddress = new MailAddress(email);
+			}
+			catch
+			{
+				valid = false;
+			}
+			return valid;
+		}
+
+		private bool IsEmailAvailable(string email)
+		{
+			List<Booking> bookings = repo.GetAllBookings();
+
+			bool valid = true;
+
+			for (int i = 0; i < bookings.Count; i++)
+			{
+				if (email.ToLower() == bookings[i].Booker.Email.ToLower())
+				{
+					valid = false;
+				}
+			}
+
+			return valid;
 		}
 
 		private void AddBooking_Click(object sender, RoutedEventArgs e)
 		{
-			// Mock input data:
-			int pitchid = 1;
-			int bookerid = 1;
-			int bookingid = 1;
-			int number = SpotInput.SelectedIndex;
-			DateTime startdate = StartDate.SelectedDate.Value;
-			DateTime enddate = EndDate.SelectedDate.Value;
 			string name = NameInput.Text;
-			string mail = MailInput.Text;
+			string email = EmailInput.Text;
+			int children = Int32.Parse(ChildrenQuantityInput.Text);
+			int adults = Int32.Parse(AdultsQuantityInput.Text);
+			DateTime startDate = StartDateInput.SelectedDate.Value;
+			DateTime endDate = EndDateInput.SelectedDate.Value;
+			Pitch pitch = (Pitch)PitchInput.SelectedItem;
 
-			// Gives an IDs to connect the right info together:
-			List<Bookings> bookings = repo.GetAllBookings();
-			List<Booker> bookers = repo.GetAllBookers();
-			List<Pitches> pitches = repo.GetAllPitches();
-			for (int i = 0; i < bookings.Count; i++)
+			Booker booker = new()
 			{
-				if(pitchid == pitches[i].ID)
+				Name = name,
+				Email = email,
+				Children = children,
+				Adults = adults
+			};
+
+			Booking booking = new()
+			{
+				StartDate = startDate,
+				EndDate = endDate,
+				PitchID = pitch.ID,
+				BookerID = booker.ID
+			};
+
+			if (AreDatesConsistent(booking.StartDate, booking.EndDate))
+			{
+				if (IsPitchAvailable(booking.StartDate, booking.EndDate, pitch))
 				{
-					pitchid++;
+					if (IsEmailValid(booker.Email))
+					{
+						if (IsEmailAvailable(booker.Email))
+						{
+							repo.AddNewBooking(booker, booking);
+						}
+						else
+						{
+							MessageBox.Show($"Denne Mail er allerede I brug", "Brug en anden Mail eller Rediger din booking", MessageBoxButton.OK, MessageBoxImage.Error);
+						}
+					}
 				}
-				if (bookerid == bookers[i].ID)
+				else
 				{
-					bookerid++;
-				}
-				if (bookingid == bookings[i].ID)
-				{
-					bookingid++;
+					MessageBox.Show($"Denne Plads er allerede I brug I denne Tids Periode", "Vælg en anden Plads eller Tids Periode", MessageBoxButton.OK, MessageBoxImage.Error);
 				}
 			}
-
-			// Make object to send to repository:
-			Pitches newpitch = new()
-			{
-				ID = pitchid,
-				Number = number
-			};
-			Booker newbooker = new()
-			{
-				ID = bookerid,
-				Name = name,
-				Mail = mail
-			};
-			Bookings newbooking = new()
-			{
-				ID = bookingid,
-				StartDate = startdate,
-				EndDate = enddate,
-				PitchID = pitchid,
-				BookerID = bookerid
-			};
-
-			// Call the repository:
-			repo.AddNewPitch(newpitch);
-			repo.AddNewBooker(newbooker);
-			repo.AddNewBooking(newbooking);
 
 			RefreshGridList();
 		}
 
+		Booking selectedBooking;
+
+		private void BookingGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (BookingGrid.SelectedItem != null)
+			{
+				selectedBooking = (Booking)BookingGrid.SelectedItem;
+
+				NameInput.Text = selectedBooking.Booker.Name;
+				EmailInput.Text = selectedBooking.Booker.Email;
+				StartDateInput.SelectedDate = selectedBooking.StartDate;
+				EndDateInput.SelectedDate = selectedBooking.EndDate;
+				PitchInput.SelectedIndex = selectedBooking.Pitch.Number - 1;
+				ChildrenQuantityInput.Text = selectedBooking.Booker.Children.ToString();
+				AdultsQuantityInput.Text = selectedBooking.Booker.Adults.ToString();
+			}
+		}
+
+		private bool IsEmailTheSame(string email)
+		{
+			bool valid = true;
+
+			if (email.ToLower() != selectedBooking.Booker.Email.ToLower())
+			{
+				valid = false;
+			}
+
+			return valid;
+		}
+
+		private void EditBooking_Click(object sender, RoutedEventArgs e)
+		{
+			Pitch pitch = (Pitch)PitchInput.SelectedItem;
+
+			Booker booker = selectedBooking.Booker;
+
+			booker.Name = NameInput.Text;
+			booker.Email = EmailInput.Text;
+			booker.Children = Int32.Parse(ChildrenQuantityInput.Text);
+			booker.Adults = Int32.Parse(AdultsQuantityInput.Text);
+
+			Booking booking = selectedBooking;
+
+			booking.StartDate = StartDateInput.SelectedDate.Value;
+			booking.EndDate = EndDateInput.SelectedDate.Value;
+			booking.PitchID = pitch.ID;
+			booking.BookerID = booker.ID;
+			booking.Pitch = pitch;
+			booking.Booker = booker;
+
+			if (AreDatesConsistent(booking.StartDate, booking.EndDate))
+			{
+				if (IsEmailValid(booker.Email))
+				{
+					if (IsEmailTheSame(booker.Email))
+					{
+						if (selectedBooking.StartDate == StartDateInput.SelectedDate &&
+					selectedBooking.EndDate == EndDateInput.SelectedDate &&
+					selectedBooking.Pitch.Number == PitchInput.SelectedIndex + 1)
+						{
+							repo.UpdateBooking(booker, booking);
+						}
+						else
+						{
+							if (IsPitchAvailable(booking.StartDate, booking.EndDate, booking.Pitch))
+							{
+								repo.UpdateBooking(booker, booking);
+							}
+							else
+							{
+								MessageBox.Show($"Denne Plads er allerede I brug I denne Tids Periode", "Vælg en anden Plads eller Tids Periode", MessageBoxButton.OK, MessageBoxImage.Error);
+							}
+						}
+					}
+					else
+					{
+						MessageBox.Show($"Denne Mail matcher ikke den Booking du prøver at endre", "Brug den samme Mail hvis du skal rediger dumbass", MessageBoxButton.OK, MessageBoxImage.Error);
+					}
+				}
+			}
+
+			RefreshGridList();
+		}
+
+
+		List<Booking> searchModeList = new();
+
+		private void Search_Click(object sender, RoutedEventArgs e)
+		{
+			searchModeList.Clear();
+			List<Booking> bookings = repo.GetAllBookings();
+			if (CheckAndSearchPitchInput.SelectedIndex+1 >= 0)
+			{
+				for (int i = 0; i < bookings.Count; i++)
+				{
+					if (CheckAndSearchPitchInput.SelectedIndex+1 == bookings[i].Pitch.Number)
+					{
+						searchModeList.Add(bookings[i]);
+					}
+				}
+			}
+			if (searchModeList.Count == 0)
+			{
+				searchModeList = bookings;
+			}
+
+			BookingGrid.ItemsSource = searchModeList;
+		}
+
+		private void Check_Click(object sender, RoutedEventArgs e)
+		{
+			if (AreDatesConsistent(CheckStartDateInput.SelectedDate.Value, CheckEndDateInput.SelectedDate.Value))
+			{
+				if (CheckAndSearchPitchInput.SelectedIndex+1 >= 0)
+				{
+					if (IsPitchAvailable(CheckStartDateInput.SelectedDate.Value, CheckEndDateInput.SelectedDate.Value, (Pitch)CheckAndSearchPitchInput.SelectedItem))
+					{
+						CheckPitchAnswer.Text = "Plads ledig";
+					}
+					else
+					{
+						CheckPitchAnswer.Text = "Plads booket!";
+					}
+				}
+			}
+		}
 	}
 }

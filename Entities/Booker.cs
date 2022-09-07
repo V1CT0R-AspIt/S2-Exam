@@ -10,6 +10,8 @@ namespace Entities
 	{
 		public int ID { get; set; }
 		public string Name { get; set; }
-		public string Mail { get; set; }
+		public string Email { get; set; }
+		public int Children { get; set; }
+		public int Adults { get; set; }
 	}
 }

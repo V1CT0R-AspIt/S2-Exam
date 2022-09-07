@@ -7,7 +7,8 @@
 		mc:Ignorable="d"
 		Title="MainWindow"
 		Height="550"
-		Width="1200">
+		Width="1200"
+		ResizeMode="NoResize">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="250" />
@@ -15,7 +16,7 @@
 		</Grid.ColumnDefinitions>
 
 
-		<GroupBox Header="Ny Booking"
+		<GroupBox Header="Ny Booking og rediger"
 				  FontSize="16">
 			<Grid>
 				<TextBlock HorizontalAlignment="Left"
@@ -29,24 +30,24 @@
 						 Margin="80,10,0,0"
 						 Text=""
 						 FontSize="16"
-						 TextWrapping="Wrap"
 						 VerticalAlignment="Top"
 						 Width="120" />
 
+
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="20,50,0,0"
-						   Text="Mail:"
+						   Text="Email:"
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
-				<TextBox Name="MailInput"
+				<TextBox Name="EmailInput"
 						 HorizontalAlignment="Left"
 						 Margin="80,50,0,0"
 						 Text=""
 						 FontSize="16"
-						 TextWrapping="Wrap"
 						 VerticalAlignment="Top"
 						 Width="120" />
+
 
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="20,92,0,0"
@@ -54,12 +55,13 @@
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
-				<DatePicker Name="StartDate"
+				<DatePicker Name="StartDateInput"
 							HorizontalAlignment="Left"
 							Margin="80,90,0,0"
 							FontSize="16"
 							VerticalAlignment="Top"
 							Width="120" />
+
 
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="20,130,0,0"
@@ -67,12 +69,13 @@
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
-				<DatePicker Name="EndDate"
+				<DatePicker Name="EndDateInput"
 							HorizontalAlignment="Left"
 							Margin="80,130,0,0"
 							FontSize="16"
 							VerticalAlignment="Top"
 							Width="120" />
+
 
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="20,180,0,0"
@@ -80,7 +83,10 @@
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
 				<ListBox Margin="80,180,38,171"
-						 Name="SpotInput" />
+						 Name="PitchInput"
+						 DisplayMemberPath="Number"
+						 Height="150" />
+
 
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="20,360,0,0"
@@ -88,14 +94,14 @@
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
-				<TextBox Name="AdultsQuantity"
+				<TextBox Name="AdultsQuantityInput"
 						 HorizontalAlignment="Left"
 						 Margin="130,360,0,0"
 						 Text=""
 						 FontSize="16"
-						 TextWrapping="Wrap"
 						 VerticalAlignment="Top"
 						 Width="50" />
+
 
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="20,390,0,0"
@@ -103,14 +109,15 @@
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top" />
-				<TextBox Name="KidsQuantity"
+				<TextBox Name="ChildrenQuantityInput"
 						 HorizontalAlignment="Left"
 						 Margin="130,390,0,0"
 						 Text=""
 						 FontSize="16"
-						 TextWrapping="Wrap"
 						 VerticalAlignment="Top"
 						 Width="50" />
+
+
 				<Button Name="AddBooking"
 						Content="Opret"
 						HorizontalAlignment="Left"
@@ -119,6 +126,16 @@
 						Width="70"
 						VerticalAlignment="Top"
 						Click="AddBooking_Click" />
+
+
+				<Button x:Name="EditBooking"
+						Content="Rediger"
+						HorizontalAlignment="Left"
+						Margin="40,425,0,0"
+						FontSize="20"
+						Width="75"
+						VerticalAlignment="Top"
+						Click="EditBooking_Click" />
 			</Grid>
 		</GroupBox>
 
@@ -126,62 +143,22 @@
 
 
 		<GroupBox Grid.Column="1"
-				  Header="Søg og vediger"
+				  Header="Søg"
 				  FontSize="16">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="225" />
 					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
 				</Grid.ColumnDefinitions>
+
 				<TextBlock Name="temp"
-						   Margin="20,400,0,0"
+						   Margin="230,10,0,0"
 						   Text=""
 						   FontSize="16"
 						   TextWrapping="Wrap"
 						   VerticalAlignment="Top"
-						   HorizontalAlignment="Left" />
-
-				<TextBlock HorizontalAlignment="Left"
-						   Margin="20,10,0,0"
-						   Text="Fra:"
-						   FontSize="16"
-						   TextWrapping="Wrap"
-						   VerticalAlignment="Top" />
-				<DatePicker Name="StartDateUpdate"
-							HorizontalAlignment="Left"
-							Margin="80,8,0,0"
-							FontSize="16"
-							VerticalAlignment="Top"
-							Width="120" />
-
-				<TextBlock HorizontalAlignment="Left"
-						   Margin="20,48,0,0"
-						   Text="Til:"
-						   FontSize="16"
-						   TextWrapping="Wrap"
-						   VerticalAlignment="Top" />
-				<DatePicker Name="EndDateUpdate"
-							HorizontalAlignment="Left"
-							Margin="80,48,0,0"
-							FontSize="16"
-							VerticalAlignment="Top"
-							Width="120" />
-				<Button Content="Søg"
-						HorizontalAlignment="Left"
-						Margin="160,85,0,0"
-						VerticalAlignment="Top" />
-
-				<TextBlock HorizontalAlignment="Left"
-						   Margin="20,100,0,0"
-						   Text="Ledige pladser:"
-						   FontSize="16"
-						   TextWrapping="Wrap"
-						   VerticalAlignment="Top" />
-				<ListBox Grid.Column="0"
-						 Name="AvailableSpots"
-						 Margin="20,130,85,136" />
+						   HorizontalAlignment="Left"
+						   Grid.Column="1" />
 
 				<TextBlock HorizontalAlignment="Left"
 						   Margin="10,10,0,0"
@@ -191,56 +168,98 @@
 						   VerticalAlignment="Top"
 						   Grid.Column="1" />
 
-				<DataGrid Name="PitchGrid"
-						  Grid.Column="1"
-						  Padding="0,10,0,10"
-						  Height="400"
-						  Grid.ColumnSpan="2"
-						  Margin="0,40,237,66"
-						  AutoGenerateColumns="False">
-					<DataGrid.Columns>
-						<DataGridTextColumn Header="Pitch"
-											Binding="{Binding Path=Number}" />
-					</DataGrid.Columns>
-				</DataGrid>
 
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="20,52,0,0"
+						   Text="Fra:"
+						   FontSize="16"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<DatePicker Name="CheckStartDateInput"
+							HorizontalAlignment="Left"
+							Margin="80,50,0,0"
+							FontSize="16"
+							VerticalAlignment="Top"
+							Width="120" />
+
+
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="20,90,0,0"
+						   Text="Til:"
+						   FontSize="16"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<DatePicker Name="CheckEndDateInput"
+							HorizontalAlignment="Left"
+							Margin="80,90,0,0"
+							FontSize="16"
+							VerticalAlignment="Top"
+							Width="120" />
+
+
+				<TextBlock HorizontalAlignment="Left"
+						   Margin="20,140,0,0"
+						   Text="Plads:"
+						   TextWrapping="Wrap"
+						   VerticalAlignment="Top" />
+				<ListBox Margin="80,142,25,214"
+						 Name="CheckAndSearchPitchInput"
+						 DisplayMemberPath="Number"
+						 Height="150" />
+
+
+				<Button Name="Search"
+						Content="Søg"
+						HorizontalAlignment="Left"
+						Margin="140,307,0,0"
+						FontSize="20"
+						Width="50"
+						VerticalAlignment="Top"
+						Click="Search_Click" />
+
+
+				<Button Name="Check"
+						Content="Tjek"
+						HorizontalAlignment="Left"
+						Margin="75,307,0,0"
+						FontSize="20"
+						Width="50"
+						VerticalAlignment="Top"
+						Click="Check_Click" />
+				<TextBlock Name="CheckPitchAnswer" 
+						   HorizontalAlignment="Left"
+						   Margin="75,343,0,0"
+						   TextWrapping="Wrap"
+						   Text=""
+						   FontSize="20"
+						   VerticalAlignment="Top" />
+
+				
 				<DataGrid Name="BookingGrid"
 						  Grid.Column="1"
 						  Padding="0,10,0,10"
+						  Grid.ColumnSpan="1"
 						  Height="400"
-						  Grid.ColumnSpan="2"
-						  Margin="237,40,0,66"
-						  AutoGenerateColumns="False">
+						  Margin="0,40,20,60"
+						  AutoGenerateColumns="False"
+						  SelectionChanged="BookingGrid_SelectionChanged">
 					<DataGrid.Columns>
-						<DataGridTextColumn Header="StarDato"
+						<DataGridTextColumn Header="Plads"
+											Binding="{Binding Path=Pitch.Number}" />
+
+						<DataGridTextColumn Header="Start"
 											Binding="{Binding Path=StartDate, StringFormat=dd.MM.yyyy}" />
-						<DataGridTextColumn Header="SlutDato"
+
+						<DataGridTextColumn Header="Slut"
 											Binding="{Binding Path=EndDate, StringFormat=dd.MM.yyyy}" />
-					</DataGrid.Columns>
-				</DataGrid>
 
-				<DataGrid Name="BookerGrid"
-						  Grid.Column="2"
-						  Padding="0,10,0,10"
-						  Grid.ColumnSpan="2"
-						  Margin="237,40,-1,66"
-						  AutoGenerateColumns="False">
-					<DataGrid.Columns>
 						<DataGridTextColumn Header="Navn"
-											Binding="{Binding Path=Name}" />
-						<DataGridTextColumn Header="Mail"
-											Binding="{Binding Path=Mail}" />
+											Binding="{Binding Path=Booker.Name}" />
+
+						<DataGridTextColumn Header="Email"
+											Binding="{Binding Path=Booker.Email}" />
 					</DataGrid.Columns>
 				</DataGrid>
-
-				<Button Grid.Column="1"
-						Name="Update"
-						Content="Rediger"
-						HorizontalAlignment="Left"
-						Margin="20,450,0,0"
-						FontSize="20"
-						Width="80"
-						VerticalAlignment="Top" />
 			</Grid>
 		</GroupBox>
 	</Grid>
