@@ -8,7 +8,24 @@ namespace Entities
 {
 	public class Booker
 	{
-		public int ID { get; set; }
+		private int id;
+		public int ID
+		{
+			get
+			{
+				return id;
+			}
+
+			set
+			{
+				if (value <= 0)
+				{
+					throw new ArgumentException();
+				}
+				id = value;
+			}
+		}
+
 		public string Name { get; set; }
 		public string Email { get; set; }
 		public int Children { get; set; }

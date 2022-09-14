@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32510.428
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32819.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{FA9DA627-5EAD-441A-ACC1-DD90B301F3E9}"
 EndProject
@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GUI", "GUI\GUI.csproj", "{1
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entities.csproj", "{85ABA619-0755-4D3A-BF11-12BC27ABA9F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{A0882269-B852-412A-ADE8-E849731D63B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{A0882269-B852-412A-ADE8-E849731D63B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{78E1BDC4-E442-4B6B-8058-8C928DEF40DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{A0882269-B852-412A-ADE8-E849731D63B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0882269-B852-412A-ADE8-E849731D63B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0882269-B852-412A-ADE8-E849731D63B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78E1BDC4-E442-4B6B-8058-8C928DEF40DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78E1BDC4-E442-4B6B-8058-8C928DEF40DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78E1BDC4-E442-4B6B-8058-8C928DEF40DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78E1BDC4-E442-4B6B-8058-8C928DEF40DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

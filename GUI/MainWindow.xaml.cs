@@ -64,6 +64,7 @@ namespace GUI
 		}
 
 
+		#region AddNewBooking
 		private bool AreDatesConsistent(DateTime startDate, DateTime endDate)
 		{
 			return startDate < endDate;
@@ -73,7 +74,7 @@ namespace GUI
 		{
 			List<Booking> bookings = repo.GetAllBookings();
 
-			for(int i = 0; i < bookings.Count; i++)
+			for (int i = 0; i < bookings.Count; i++)
 			{
 				if ((startDate <= bookings[i].EndDate && startDate >= bookings[i].StartDate) || (endDate <= bookings[i].EndDate && endDate >= bookings[i].StartDate))
 				{
@@ -168,8 +169,10 @@ namespace GUI
 			}
 
 			RefreshGridList();
-		}
+		} 
+		#endregion
 
+		#region EditBooking
 		Booking selectedBooking;
 
 		private void BookingGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -252,20 +255,22 @@ namespace GUI
 			}
 
 			RefreshGridList();
-		}
+		} 
+		#endregion
 
 
+		#region SearchAndCheck
 		List<Booking> searchModeList = new();
 
 		private void Search_Click(object sender, RoutedEventArgs e)
 		{
 			searchModeList.Clear();
 			List<Booking> bookings = repo.GetAllBookings();
-			if (CheckAndSearchPitchInput.SelectedIndex+1 >= 0)
+			if (CheckAndSearchPitchInput.SelectedIndex + 1 >= 0)
 			{
 				for (int i = 0; i < bookings.Count; i++)
 				{
-					if (CheckAndSearchPitchInput.SelectedIndex+1 == bookings[i].Pitch.Number)
+					if (CheckAndSearchPitchInput.SelectedIndex + 1 == bookings[i].Pitch.Number)
 					{
 						searchModeList.Add(bookings[i]);
 					}
@@ -275,7 +280,7 @@ namespace GUI
 			{
 				searchModeList = bookings;
 			}
-
+			BookingGrid.ItemsSource = null;
 			BookingGrid.ItemsSource = searchModeList;
 		}
 
@@ -283,7 +288,7 @@ namespace GUI
 		{
 			if (AreDatesConsistent(CheckStartDateInput.SelectedDate.Value, CheckEndDateInput.SelectedDate.Value))
 			{
-				if (CheckAndSearchPitchInput.SelectedIndex+1 >= 0)
+				if (CheckAndSearchPitchInput.SelectedIndex + 1 >= 0)
 				{
 					if (IsPitchAvailable(CheckStartDateInput.SelectedDate.Value, CheckEndDateInput.SelectedDate.Value, (Pitch)CheckAndSearchPitchInput.SelectedItem))
 					{
@@ -295,6 +300,7 @@ namespace GUI
 					}
 				}
 			}
-		}
+		} 
+		#endregion
 	}
 }

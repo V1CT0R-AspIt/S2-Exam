@@ -19,8 +19,11 @@ namespace DataAccess
 
 		public List<Booking> GetAllBookings()
 		{
-			// Vi bruger den samme forbindelse til begge SELECT transaktions, så derfor har vi kun én sql streng:
-			string sql = "SELECT * FROM Pitches; SELECT * FROM Bookers; SELECT * FROM Bookings;";
+			// Lav listen som metode skal returner:
+			List<Booking> bookings = new();
+
+			// Skriv den kode der skal udføres:
+			string sql = "SELECT * FROM Bookings;";
 
 			// Lav en forbindelse til databasen, åbn den:
 			SqlConnection connection = new(connectionString);
@@ -33,85 +36,9 @@ namespace DataAccess
 			SqlDataReader reader = command.ExecuteReader();
 
 			// Udtag Bookings data og lav om til C# objekter:
-			List<Pitch> pitches = MakePitchesList(reader);
+			List<Pitch> pitches = GetAllPitches();
 
-			reader.NextResult();
-
-			List<Booker> bookers = MakeBookersList(reader);
-
-			reader.NextResult();
-
-			List<Booking> bookings = MakeBookingsList(reader, pitches, bookers);
-
-			// returner listen der nu er fyldt med objekter:
-			return bookings;
-		}
-
-		public List<Pitch> GetAllPitches()
-		{
-			List<Pitch> pitches = new();
-
-			string sql = "SELECT * FROM Pitches;";
-
-			SqlConnection connection = new(connectionString);
-			connection.Open();
-
-			SqlCommand command = new(sql, connection);
-
-			SqlDataReader reader = command.ExecuteReader();
-
-			while (reader.Read())
-			{
-				int id = (int)reader["ID"];
-				int number = (int)reader["Number"];
-				Pitch pitch = new()
-				{
-					ID = id,
-					Number = number
-				};
-				pitches.Add(pitch);
-			}
-
-			return pitches;
-		}
-
-		public List<Booker> GetAllBookers()
-		{
-			List<Booker> bookers = new();
-
-			string sql = "SELECT * FROM Bookers;";
-
-			SqlConnection connection = new(connectionString);
-			connection.Open();
-
-			SqlCommand command = new(sql, connection);
-
-			SqlDataReader reader = command.ExecuteReader();
-
-			while (reader.Read())
-			{
-				int id = (int)reader["ID"];
-				string name = (string)reader["Name"];
-				string email = (string)reader["Email"];
-				int children = (int)reader["Children"];
-				int adults = (int)reader["Adults"];
-				Booker booker = new()
-				{
-					ID = id,
-					Name = name,
-					Email = email,
-					Children = children,
-					Adults = adults
-				};
-				bookers.Add(booker);
-			}
-
-			return bookers;
-		}
-
-		private List<Booking> MakeBookingsList(SqlDataReader reader, List<Pitch> pitches, List<Booker> bookers)
-		{
-			List<Booking> bookings = new();
+			List<Booker> bookers = GetAllBookers();
 
 			while (reader.Read())
 			{
@@ -136,13 +63,29 @@ namespace DataAccess
 				bookings.Add(booking);
 			}
 
+			// returner listen der nu er fyldt med objekter:
 			return bookings;
 		}
 
-		private List<Pitch> MakePitchesList(SqlDataReader reader)
+		public List<Pitch> GetAllPitches()
 		{
+			// Lav listen som metode skal returner:
 			List<Pitch> pitches = new();
 
+			// Skriv den kode der skal udføres:
+			string sql = "SELECT * FROM Pitches;";
+
+			// Lav en forbindelse til databasen, åbn den:
+			SqlConnection connection = new(connectionString);
+			connection.Open();
+
+			// Lav et command object, der skal udføre transaktionen
+			SqlCommand command = new(sql, connection);
+
+			// Udfør transaktionen, og gem resultatet i en SqlDataReader:
+			SqlDataReader reader = command.ExecuteReader();
+
+			// Udtag Pitches data og lav om til C# objekter:
 			while (reader.Read())
 			{
 				int id = (int)reader["ID"];
@@ -155,13 +98,29 @@ namespace DataAccess
 				pitches.Add(pitch);
 			}
 
+			// returner listen der nu er fyldt med objekter:
 			return pitches;
 		}
 
-		private List<Booker> MakeBookersList(SqlDataReader reader)
+		public List<Booker> GetAllBookers()
 		{
+			// Lav listen som metode skal returner:
 			List<Booker> bookers = new();
 
+			// Skriv den kode der skal udføres:
+			string sql = "SELECT * FROM Bookers;";
+
+			// Lav en forbindelse til databasen, åbn den:
+			SqlConnection connection = new(connectionString);
+			connection.Open();
+
+			// Lav et command object, der skal udføre transaktionen
+			SqlCommand command = new(sql, connection);
+
+			// Udfør transaktionen, og gem resultatet i en SqlDataReader:
+			SqlDataReader reader = command.ExecuteReader();
+
+			// Udtag Bookers data og lav om til C# objekter:
 			while (reader.Read())
 			{
 				int id = (int)reader["ID"];
@@ -180,6 +139,7 @@ namespace DataAccess
 				bookers.Add(booker);
 			}
 
+			// returner listen der nu er fyldt med objekter:
 			return bookers;
 		}
 
